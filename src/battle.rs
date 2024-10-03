@@ -4,6 +4,8 @@ use crate::combatant::Combatant;
 
 pub struct Battle<'a> {
     pub player: &'a mut dyn Combatant,
+    //pub player_team: Vec<&'a mut dyn Combatant>,
+    //pub enemy_team: Vec<&'a mut dyn Combatant>,
     pub enemy: &'a mut dyn Combatant,
     pub round: u32,
 }
