@@ -25,6 +25,7 @@ pub struct Enemy {
     pub aggression: f32,
     pub effects: Arc<Mutex<Vec<Effect>>>,
     pub ai_data: Arc<HashMap<&'static str, AiData>>,
+    pub crit_chance: f32,
 }
 
 impl Combatant for Enemy {
@@ -203,6 +204,10 @@ impl Combatant for Enemy {
     
         best_move.unwrap().into()
     }
+
+    fn get_crit_chance(&self) -> f32 {
+        self.crit_chance
+    }
     
 }
 
@@ -229,6 +234,7 @@ impl Enemy {
             aggression: self.aggression,   
             effects: self.effects.clone(),
             ai_data: self.ai_data.clone(),
+            crit_chance: self.crit_chance,
         }
     }
 

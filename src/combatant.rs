@@ -43,6 +43,16 @@ pub trait Combatant {
     fn pick_move<'a>(&self, enemy: &'a mut (dyn Combatant + 'a)) -> Arc<Move>;
 
     fn get_effect_list(&self) -> Vec<Arc<Mutex<Effect>>>;
+    fn get_crit_chance(&self) -> f32;
+    fn crit(&self, damage: f32) -> f32 {
+        let crit_chance = self.get_crit_chance();
+        let random = rand::random::<f32>();
+        if random < crit_chance {
+            println!("Critical hit!");
+            return damage * 1.5;
+        }
+        return damage;
+    }
 }
     
     pub trait CloneableCombatant: Combatant {

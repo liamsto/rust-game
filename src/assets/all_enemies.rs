@@ -26,5 +26,6 @@ lazy_static!(
         aggression: 0.6,
         effects: Arc::new(Mutex::new(Vec::new())),
         ai_data: Arc::new(all_moves::DEBUG_AI_MOVES.clone()), 
+        crit_chance: 0.3,
     };
 );

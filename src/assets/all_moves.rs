@@ -12,7 +12,8 @@ lazy_static! {
         effect_fn: Arc::new(|character: &mut dyn Combatant, enemy: &mut dyn Combatant| {
             let user_attack = *character.attack();
             let enemy_defense = *enemy.defense();
-            let damage = 10.0 + (user_attack - enemy_defense) * 0.5;
+            let mut damage = 10.0 + (user_attack - enemy_defense) * 0.5;
+            damage = character.crit(damage);
             if damage <= 0.0 {
                 println!("The attack was ineffective!");
                 return;
@@ -30,7 +31,8 @@ lazy_static! {
         description: "An attack that ignores enemy defense",
         effect_fn: Arc::new(|character: &mut dyn Combatant, enemy: &mut dyn Combatant | {
             let user_attack = *character.attack();
-            let damage = 5.0 + user_attack * 0.75;
+            let mut damage = 5.0 + user_attack * 0.75;
+            damage = character.crit(damage);
             if damage <= 0.0 {
                 println!("The attack was ineffective!");
                 return;
@@ -47,7 +49,8 @@ lazy_static! {
         effect_fn: Arc::new(|character: &mut dyn Combatant, enemy: &mut dyn Combatant| {
             let user_attack = *character.attack();
             let enemy_defense = *enemy.defense();
-            let damage = 5.0 + (user_attack - enemy_defense) * 0.5;
+            let mut damage = 5.0 + (user_attack - enemy_defense) * 0.5;
+            damage = character.crit(damage);
             if damage <= 0.0 {
                 println!("The attack was ineffective!");
                 return;

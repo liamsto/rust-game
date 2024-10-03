@@ -43,7 +43,8 @@ fn main() {
         ],
         vec![],
         vec![],
-        None
+        None,
+        0.2,
     );
     let mut enemy = all_enemies::DEBUG.clone();
     player.items.push(all_items::ENERGY_DRINK.clone().into());

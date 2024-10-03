@@ -24,6 +24,7 @@ pub struct Character {
     pub items: Vec<Arc<Item>>,
     pub held_item: Option<Arc<Item>>,
     pub effects: Arc<Mutex<Vec<Effect>>>,
+    pub crit_chance: f32,
 }
 
 impl Combatant for Character {
@@ -116,6 +117,10 @@ impl Combatant for Character {
         }
         effect_list
     }
+
+    fn get_crit_chance(&self) -> f32 {
+        self.crit_chance
+    }
 }
 
 
@@ -137,7 +142,8 @@ impl Character {
         moves: [Option<Arc<Move>>; 4],
         known_moves: Vec <Arc<Move>>,
         items: Vec<Arc<Item>>,
-        held_item: Option<Arc<Item>>
+        held_item: Option<Arc<Item>>,
+        crit_chance: f32,
     ) -> Character {
         Character {
             alive,
@@ -157,6 +163,7 @@ impl Character {
             items,
             held_item,
             effects: Arc::new(Mutex::new(Vec::new())),
+            crit_chance,
         }
     }
 
@@ -206,6 +213,7 @@ impl Character {
             items: self.items.clone(),
             held_item: self.held_item.clone(),
             effects: self.effects.clone(),
+            crit_chance: self.crit_chance,
         }
     }
 
