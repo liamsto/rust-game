@@ -1,5 +1,4 @@
 use std::sync::{Mutex, Arc};
-
 use crate::combatant::Combatant;
 use crate::effect::Effect;
 use crate::move_mod::Move;
@@ -121,6 +120,14 @@ impl Combatant for Character {
     fn get_crit_chance(&self) -> f32 {
         self.crit_chance
     }
+
+    fn get_speed(&self) -> f32 {
+        self.speed
+    }
+
+    fn moves(&self) -> [Option <Arc<Move>>; 4] {
+        self.moves.clone()
+    }
 }
 
 
@@ -234,3 +241,4 @@ impl Character {
     }
 
 }
+

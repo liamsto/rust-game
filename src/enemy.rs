@@ -208,6 +208,14 @@ impl Combatant for Enemy {
     fn get_crit_chance(&self) -> f32 {
         self.crit_chance
     }
+
+    fn get_speed(&self) -> f32 {
+        self.speed
+    }
+
+    fn moves(&self) -> [Option<Arc<Move>>; 4] {
+        self.moves.clone()
+    }
     
 }
 

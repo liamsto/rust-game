@@ -7,6 +7,7 @@ pub trait Combatant {
     fn attack(&mut self) -> &mut f32;
     fn defense(&mut self) -> &mut f32;
     fn speed(&mut self) -> &mut f32;
+    fn get_speed(&self) -> f32;
     fn max_health(&self) -> f32;
     fn max_attack(&self) -> f32;
     fn max_defense(&self) -> f32;
@@ -44,6 +45,7 @@ pub trait Combatant {
 
     fn get_effect_list(&self) -> Vec<Arc<Mutex<Effect>>>;
     fn get_crit_chance(&self) -> f32;
+    #[inline]
     fn crit(&self, damage: f32) -> f32 {
         let crit_chance = self.get_crit_chance();
         let random = rand::random::<f32>();
@@ -53,6 +55,8 @@ pub trait Combatant {
         }
         return damage;
     }
+
+    fn moves(&self) -> [Option <Arc<Move>>; 4];
 }
     
     pub trait CloneableCombatant: Combatant {
@@ -65,3 +69,14 @@ impl Clone for Box<dyn CloneableCombatant + Sync> {
         self.clone_box()
     }
 }
+
+impl PartialEq for dyn Combatant {
+    fn eq(&self, other: &Self) -> bool {
+        self.name() == other.name()
+    }
+    
+    fn ne(&self, other: &Self) -> bool {
+        !self.eq(other)
+    }
+}
+
