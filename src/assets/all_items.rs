@@ -1,6 +1,5 @@
 use crate::item::Item;
 
-
 pub const ENERGY_DRINK: Item = Item {
     name: "Energy Drink",
     healthinc: 0.0,
@@ -12,7 +11,3 @@ pub const ENERGY_DRINK: Item = Item {
     attackdec: 0.0,
     healthdec: 0.0,
 };
-
-
-
-

@@ -14,7 +14,7 @@ pub struct Item {
 }
 
 impl Item {
-    pub fn clone (&self) -> Item {
+    pub fn clone(&self) -> Item {
         Item {
             name: self.name,
             healthinc: self.healthinc,
@@ -28,39 +28,39 @@ impl Item {
         }
     }
 
-    pub fn equip (&self, character: &mut Character) {
+    pub fn equip(&self, character: &mut Character) {
         if character.held_item.as_ref() == None {
             character.held_item = Some(self.clone().into());
             match self.healthinc {
-                0.0 => {},
+                0.0 => {}
                 _ => character.health += self.healthinc,
             }
             match self.attackinc {
-                0.0 => {},
+                0.0 => {}
                 _ => character.attack += self.attackinc,
             }
             match self.speedinc {
-                0.0 => {},
+                0.0 => {}
                 _ => character.speed += self.speedinc,
             }
             match self.defenseinc {
-                0.0 => {},
+                0.0 => {}
                 _ => character.defense += self.defenseinc,
             }
             match self.speeddec {
-                0.0 => {},
+                0.0 => {}
                 _ => character.speed -= self.speeddec,
             }
             match self.defensedec {
-                0.0 => {},
+                0.0 => {}
                 _ => character.defense -= self.defensedec,
             }
             match self.attackdec {
-                0.0 => {},
+                0.0 => {}
                 _ => character.attack -= self.attackdec,
             }
             match self.healthdec {
-                0.0 => {},
+                0.0 => {}
                 _ => character.health -= self.healthdec,
             }
             return;
@@ -68,92 +68,86 @@ impl Item {
         if character.held_item.as_ref().map(|item| item.as_ref()) == Some(self) {
             println!("Item already equipped");
             return;
-        }
-        else {
+        } else {
             let old_item = character.held_item.as_ref().unwrap().clone();
             old_item.unequip(character);
             character.held_item = Some(self.clone().into());
             match self.healthinc {
-                0.0 => {},
+                0.0 => {}
                 _ => character.health += self.healthinc,
             }
             match self.attackinc {
-                0.0 => {},
+                0.0 => {}
                 _ => character.attack += self.attackinc,
             }
             match self.speedinc {
-                0.0 => {},
+                0.0 => {}
                 _ => character.speed += self.speedinc,
             }
             match self.defenseinc {
-                0.0 => {},
+                0.0 => {}
                 _ => character.defense += self.defenseinc,
             }
             match self.speeddec {
-                0.0 => {},
+                0.0 => {}
                 _ => character.speed -= self.speeddec,
             }
             match self.defensedec {
-                0.0 => {},
+                0.0 => {}
                 _ => character.defense -= self.defensedec,
             }
             match self.attackdec {
-                0.0 => {},
+                0.0 => {}
                 _ => character.attack -= self.attackdec,
             }
             match self.healthdec {
-                0.0 => {},
+                0.0 => {}
                 _ => character.health -= self.healthdec,
             }
         }
+    }
 
-    } 
-
-    pub fn unequip (&self, character: &mut Character) {
+    pub fn unequip(&self, character: &mut Character) {
         if character.held_item.as_ref().map(|item| item.as_ref()) == Some(self) {
             character.held_item = None;
             match self.healthinc {
-                0.0 => {},
+                0.0 => {}
                 _ => character.health -= self.healthinc,
             }
             match self.attackinc {
-                0.0 => {},
+                0.0 => {}
                 _ => character.attack -= self.attackinc,
             }
             match self.speedinc {
-                0.0 => {},
+                0.0 => {}
                 _ => character.speed -= self.speedinc,
             }
             match self.defenseinc {
-                0.0 => {},
+                0.0 => {}
                 _ => character.defense -= self.defenseinc,
             }
             match self.speeddec {
-                0.0 => {},
+                0.0 => {}
                 _ => character.speed += self.speeddec,
             }
             match self.defensedec {
-                0.0 => {},
+                0.0 => {}
                 _ => character.defense += self.defensedec,
             }
             match self.attackdec {
-                0.0 => {},
+                0.0 => {}
                 _ => character.attack += self.attackdec,
             }
             match self.healthdec {
-                0.0 => {},
+                0.0 => {}
                 _ => character.health += self.healthdec,
             }
             return;
-        }
-        else {
+        } else {
             println!("No item equipped");
         }
     }
-
 }
-
-
 
 impl PartialEq for Item {
     fn eq(&self, other: &Self) -> bool {

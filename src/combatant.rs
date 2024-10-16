@@ -1,16 +1,13 @@
-
 use std::sync::{Arc, Mutex, MutexGuard};
 
 use crate::effect::Effect;
 use crate::move_mod::Move;
 
-
-impl <'a> AsMut<dyn Combatant + 'a> for dyn Combatant {
+impl<'a> AsMut<dyn Combatant + 'a> for dyn Combatant {
     fn as_mut(&mut self) -> &mut (dyn Combatant + 'a) {
         self
     }
 }
-
 
 pub trait Combatant {
     fn health(&mut self) -> &mut f32;
@@ -41,18 +38,21 @@ pub trait Combatant {
     fn apply_effect(&mut self, effect: Mutex<Effect>);
     fn clear_effect(&mut self, effect: Mutex<Effect>);
     fn has_effect(&self, effect: &Mutex<Effect>) -> bool;
-    fn check_death(& mut self) {
+    fn check_death(&mut self) {
         if *self.health() <= 0.0 {
             println!("{} was defeated!", self.name());
             self.set_alive(false);
         }
     }
-    fn alive(& mut self) -> bool {
+    fn alive(&mut self) -> bool {
         *self.health() > 0.0
     }
     fn known_moves(&self) -> Vec<Arc<Move>>;
 
-    fn pick_target(&self, enemy_team: &Vec<Arc<Mutex<(dyn Combatant + 'static)>>>) -> Arc<Mutex<dyn Combatant>> {
+    fn pick_target(
+        &self,
+        enemy_team: &Vec<Arc<Mutex<(dyn Combatant + 'static)>>>,
+    ) -> Arc<Mutex<dyn Combatant>> {
         //TODO: Implement a better target selection algorithm
         for enemy in enemy_team {
             let mut enemy_guard = enemy.lock().unwrap();
@@ -78,20 +78,18 @@ pub trait Combatant {
         return damage;
     }
 
-    fn moves(&self) -> [Option <Arc<Move>>; 4];
+    fn moves(&self) -> [Option<Arc<Move>>; 4];
 
     fn is_player_controlled(&self) -> bool;
 
     fn pick_move_guard(&self, guard: &mut MutexGuard<'_, (dyn Combatant + 'static)>) -> Arc<Move> {
         self.pick_move(&mut **guard)
     }
-
 }
-    
+
 pub trait CloneableCombatant: Combatant {
     fn clone_box(&self) -> Box<dyn CloneableCombatant + Sync + Send>;
 }
-
 
 impl Clone for Box<dyn CloneableCombatant + Sync> {
     fn clone(&self) -> Box<dyn CloneableCombatant + Sync> {
@@ -103,9 +101,8 @@ impl PartialEq for dyn Combatant {
     fn eq(&self, other: &Self) -> bool {
         self.name() == other.name()
     }
-    
+
     fn ne(&self, other: &Self) -> bool {
         !self.eq(other)
     }
 }
-

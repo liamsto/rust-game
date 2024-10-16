@@ -12,12 +12,17 @@ pub struct Effect {
     pub name: &'static str,
     pub description: &'static str,
     pub duration: u32,
-    pub effect_fn: Arc<dyn CloneableFn + Sync + Send>,  // Use CloneableFn for cloning
+    pub effect_fn: Arc<dyn CloneableFn + Sync + Send>, // Use CloneableFn for cloning
     pub applied: bool,
 }
 
 impl Effect {
-    pub fn new(name: &'static str, description: &'static str, duration: u32, effect_fn: Arc<dyn CloneableFn + Sync + Send>) -> Mutex<Effect> {
+    pub fn new(
+        name: &'static str,
+        description: &'static str,
+        duration: u32,
+        effect_fn: Arc<dyn CloneableFn + Sync + Send>,
+    ) -> Mutex<Effect> {
         Mutex::new(Effect {
             name,
             description,
@@ -33,16 +38,12 @@ impl Effect {
             name: self.name,
             description: self.description,
             duration: self.duration,
-            effect_fn: self.effect_fn.clone(),  // Custom clone for the function
+            effect_fn: self.effect_fn.clone(), // Custom clone for the function
             applied: self.applied,
         })
     }
-    pub fn apply_effect(& mut self, on: &mut dyn Combatant) {
-
+    pub fn apply_effect(&mut self, on: &mut dyn Combatant) {
         (self.effect_fn)(on);
         self.duration -= 1;
     }
-
 }
-
-

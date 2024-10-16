@@ -20,4 +20,3 @@ impl Clone for Box<dyn CloneableFn + Sync + Send> {
         self.clone_box()
     }
 }
-

@@ -1,9 +1,8 @@
-use std::sync::{Arc, Mutex};
 use crate::combatant::Combatant;
 use crate::effect::Effect;
-use crate::move_mod::Move;
 use crate::item::Item;
-
+use crate::move_mod::Move;
+use std::sync::{Arc, Mutex};
 
 pub struct Character {
     pub alive: bool,
@@ -18,7 +17,7 @@ pub struct Character {
     pub max_speed: f32,
     pub level: i32,
     pub experience: f32,
-    pub moves: [Option <Arc<Move>>; 4],
+    pub moves: [Option<Arc<Move>>; 4],
     pub known_moves: Vec<Arc<Move>>,
     pub items: Vec<Arc<Item>>,
     pub held_item: Option<Arc<Item>>,
@@ -66,7 +65,7 @@ impl Combatant for Character {
     fn max_speed(&self) -> f32 {
         self.max_speed
     }
-    
+
     fn set_alive(&mut self, alive: bool) {
         self.alive = alive;
     }
@@ -86,7 +85,9 @@ impl Combatant for Character {
     // Check if the character has a specific effect by name
     fn has_effect(&self, effect: &Mutex<Effect>) -> bool {
         let effects = self.effects.lock().unwrap();
-        effects.iter().any(|e| e.name == effect.lock().unwrap().name)
+        effects
+            .iter()
+            .any(|e| e.name == effect.lock().unwrap().name)
     }
 
     // Allow the player to pick a move by presenting available moves
@@ -126,7 +127,7 @@ impl Combatant for Character {
         }
         self.moves[choice].clone().unwrap()
     }
-    
+
     // Return a clone of all known moves
     fn known_moves(&self) -> Vec<Arc<Move>> {
         self.known_moves.clone()
@@ -149,7 +150,7 @@ impl Combatant for Character {
         self.speed
     }
 
-    fn moves(&self) -> [Option <Arc<Move>>; 4] {
+    fn moves(&self) -> [Option<Arc<Move>>; 4] {
         self.moves.clone()
     }
 
@@ -157,8 +158,6 @@ impl Combatant for Character {
         true
     }
 }
-
-
 
 impl Character {
     pub fn new(
@@ -175,7 +174,7 @@ impl Character {
         level: i32,
         experience: f32,
         moves: [Option<Arc<Move>>; 4],
-        known_moves: Vec <Arc<Move>>,
+        known_moves: Vec<Arc<Move>>,
         items: Vec<Arc<Item>>,
         held_item: Option<Arc<Item>>,
         crit_chance: f32,
@@ -229,7 +228,7 @@ impl Character {
         self.health += 1.0;
     }
 
-    pub fn clone (&self) -> Character {
+    pub fn clone(&self) -> Character {
         Character {
             alive: self.alive,
             name: self.name.clone(),
@@ -252,7 +251,7 @@ impl Character {
         }
     }
 
-    pub fn copy (&mut self, other: &Character) {
+    pub fn copy(&mut self, other: &Character) {
         self.alive = other.alive;
         self.name = other.name.clone();
         self.attack = other.attack;
@@ -267,6 +266,4 @@ impl Character {
         self.items = other.items.clone();
         self.held_item = other.held_item.clone();
     }
-
 }
-
