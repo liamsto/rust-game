@@ -1,4 +1,4 @@
-use std::sync::{Mutex, Arc};
+use std::sync::{Arc, Mutex};
 use crate::combatant::Combatant;
 use crate::effect::Effect;
 use crate::move_mod::Move;
@@ -29,6 +29,10 @@ pub struct Character {
 impl Combatant for Character {
     fn health(&mut self) -> &mut f32 {
         &mut self.health
+    }
+
+    fn get_health(&self) -> f32 {
+        self.health
     }
 
     fn attack(&mut self) -> &mut f32 {
@@ -89,20 +93,40 @@ impl Combatant for Character {
     fn pick_move<'a>(&self, enemy: &'a mut (dyn Combatant + 'a)) -> Arc<Move> {
         println!("Choose a move to use on {}:", enemy.name());
         let mut i = 0;
+        let mut mov_count = 0;
         for mov in &self.moves {
             if let Some(m) = mov {
                 println!("{}: {}", i, m.name);
                 println!("{}", m.description);
-                println!("========================================");   
+                println!("========================================");
+                mov_count += 1;
             }
             i += 1;
         }
-        let mut choice = String::new();
-        std::io::stdin().read_line(&mut choice).unwrap();
-        let choice = choice.trim().parse::<usize>().unwrap();
+        println!(
+            "Enter the number of the move you would like to use (0-{}):",
+            mov_count - 1
+        );
+        let choice: usize;
+        loop {
+            let mut choice_str = String::new(); // Create a new String for each input
+            std::io::stdin().read_line(&mut choice_str).unwrap();
+            match choice_str.trim().parse::<usize>() {
+                Ok(num) if num < self.moves.len() => {
+                    choice = num;
+                    break;
+                }
+                _ => {
+                    println!(
+                        "Invalid choice! Please enter a number between 0 and {}.",
+                        mov_count - 1
+                    );
+                }
+            }
+        }
         self.moves[choice].clone().unwrap()
     }
-
+    
     // Return a clone of all known moves
     fn known_moves(&self) -> Vec<Arc<Move>> {
         self.known_moves.clone()
@@ -127,6 +151,10 @@ impl Combatant for Character {
 
     fn moves(&self) -> [Option <Arc<Move>>; 4] {
         self.moves.clone()
+    }
+
+    fn is_player_controlled(&self) -> bool {
+        true
     }
 }
 

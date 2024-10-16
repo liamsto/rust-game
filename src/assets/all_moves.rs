@@ -39,6 +39,7 @@ lazy_static! {
             }
             *enemy.health() -= damage;
             println!("{} took {} damage!", enemy.name(), damage);
+            enemy.check_death();
             return;
         }),
     };
@@ -63,6 +64,7 @@ lazy_static! {
             }
             println!("{} was burned!", enemy.name());
             enemy.apply_effect(all_effects::BURN.lock().unwrap().clone().into());
+            enemy.check_death();
             return;
         })
     };
@@ -108,6 +110,7 @@ lazy_static! {
             *character.attack() = attack * 1.5;
             println!("{}'s health fell!", character.name());
             println!("{}", character.name().to_owned() + "'s attack rose sharply!");
+            character.check_death();
             return;
         }),
     };

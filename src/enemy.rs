@@ -33,6 +33,10 @@ impl Combatant for Enemy {
         &mut self.health
     }
 
+    fn get_health(&self) -> f32 {
+        self.health
+    }
+
     fn attack(&mut self) -> &mut f32 {
         &mut self.attack
     }
@@ -100,6 +104,7 @@ impl Combatant for Enemy {
             }
             known_moves
     }
+
 
 
     fn pick_move<'a>(&self, enemy: &'a mut (dyn Combatant + 'a)) -> Arc<Move> {
@@ -216,10 +221,28 @@ impl Combatant for Enemy {
     fn moves(&self) -> [Option<Arc<Move>>; 4] {
         self.moves.clone()
     }
+
+    fn is_player_controlled(&self) -> bool {
+        false
+    }
     
 }
 
 impl Enemy {
+
+    fn pick_target(&self, enemies: &Vec<Arc<Mutex<dyn Combatant>>>) -> Arc<Mutex<dyn Combatant>> {
+        let mut target = enemies[0].clone();
+        let mut lowest_health = f32::MAX;
+        for enemy in enemies {
+            let mut enemy_guard = enemy.lock().unwrap();
+            if enemy_guard.health() < &mut lowest_health {
+                lowest_health = *enemy_guard.health();
+                target = enemy.clone();
+            }
+        }
+        target
+    }
+
     pub fn clone(&self) -> Enemy {
         Enemy {
             alive: self.alive,
