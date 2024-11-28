@@ -1,4 +1,7 @@
-use crate::combatant::Combatant;
+use crate::{
+    combatant::Combatant, move_mod::Move, server::handler::Handler, server::message::Message,
+    server::sender::send_message,
+};
 use std::sync::{Arc, Mutex};
 
 pub struct Battle {
@@ -6,20 +9,26 @@ pub struct Battle {
     pub enemy_team: Vec<Arc<Mutex<dyn Combatant>>>,
     pub order: Vec<Arc<Mutex<dyn Combatant>>>,
     pub round: u32,
+    pub is_multiplayer: bool,
+    pub server: Option<Arc<Mutex<Handler>>>,
 }
 
 impl Battle {
     pub fn new(
         player_team: Vec<Arc<Mutex<dyn Combatant>>>,
         enemy_team: Vec<Arc<Mutex<dyn Combatant>>>,
+        is_multiplayer: bool,
     ) -> Self {
         let order = Vec::new();
         let round = 0;
+        let server = None;
         Battle {
             player_team,
             enemy_team,
             order,
             round,
+            is_multiplayer,
+            server,
         }
     }
 
@@ -27,7 +36,18 @@ impl Battle {
         Arc::clone(&self.order[index])
     }
 
+    pub fn init_server(&mut self, server: Arc<Mutex<Handler>>) {
+        self.server = Some(server);
+        if let Some(ref server) = self.server {
+            server.lock().unwrap().run_server();
+        }
+    }
+
     pub fn run_battle(&mut self) {
+        if self.is_multiplayer {
+            self.init_server(self.server.clone().unwrap());
+        }
+
         self.calculate_order(); // Initialize the order once
         while self.player_team.iter().any(|x| x.lock().unwrap().alive())
             && self.enemy_team.iter().any(|x| x.lock().unwrap().alive())
@@ -117,6 +137,25 @@ impl Battle {
         let mut target_guard = target.lock().unwrap();
         // Pick a move for the player
         let mov = player.pick_move_guard(&mut target_guard);
+        let serialized_move = mov.serialize();
+        let move_message = Message::new(
+            crate::server::message::MessageKind::Action {
+                name: (mov.name.to_string()),
+                user: (player.name().to_string()),
+                target: (target_guard.name().to_string()),
+            },
+            serialized_move,
+        );
+        match send_message(self.server.clone().unwrap(), move_message) {
+            Ok(_) => {
+                println!("Move sent successfully!");
+            }
+            Err(e) => {
+                println!("Failed to send move: {}", e);
+                panic!();
+            }
+        }
+
         (mov.effect_fn)(&mut *player, &mut *target_guard);
 
         if !player.alive() {
@@ -150,15 +189,14 @@ impl Battle {
         }
     }
 
-
-    pub fn recieve_server_move() {
-
+    pub fn process_server_move(
+        &mut self,
+        player_move: Arc<Move>,
+        user: Arc<Mutex<dyn Combatant>>,
+        target: Arc<Mutex<dyn Combatant>>,
+    ) {
+        let mut user_guard = user.lock().unwrap();
+        let mut target_guard = target.lock().unwrap();
+        (player_move.effect_fn)(&mut *user_guard, &mut *target_guard);
     }
-
-    
-
-    
-
 }
-
-

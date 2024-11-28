@@ -1,8 +1,9 @@
+use crate::all_moves;
 use std::{collections::HashMap, sync::Arc};
 
 use lazy_static::lazy_static;
 
-use crate::{assets::all_moves::{self, MoveData}, character::Character, cloneablefn_combatant::CloneableFnCombatant};
+use crate::{character::Character, cloneablefn_combatant::CloneableFnCombatant};
 
 #[derive(Clone)]
 
@@ -43,24 +44,11 @@ impl Move {
     }
 
     pub fn serialize(&self) -> String {
-        format!(
-            "{}|{}",
-            self.name,
-            self.priority,
-        )
+        format!("{}", self.name,)
     }
-
-    pub fn deserialize(serialized: &str) -> Arc<Move> {
-        let name = serialized.split('|').nth(0).unwrap();
-        let move_dictionary = &MOVE_DICTIONARY;
-        let move_arc = move_dictionary.get(name).unwrap();
-        move_arc.clone()
-    }
-
 }
 
-
-lazy_static!{
+lazy_static! {
     pub static ref MOVE_DICTIONARY: HashMap<&'static str, Arc<Move>> = {
         let mut m = HashMap::new();
         m.insert("Dismantle", all_moves::DISMANTLE.clone());

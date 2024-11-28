@@ -9,7 +9,7 @@ impl<'a> AsMut<dyn Combatant + 'a> for dyn Combatant {
     }
 }
 
-pub trait Combatant {
+pub trait Combatant: Send + Sync {
     fn health(&mut self) -> &mut f32;
     fn get_health(&self) -> f32;
     fn attack(&mut self) -> &mut f32;
