@@ -23,7 +23,7 @@ impl Battle {
         }
     }
 
-    fn get_current_combatant(&self, index: usize) -> Arc<Mutex<dyn Combatant>> {
+    pub fn get_current_combatant(&self, index: usize) -> Arc<Mutex<dyn Combatant>> {
         Arc::clone(&self.order[index])
     }
 
@@ -149,4 +149,16 @@ impl Battle {
             }
         }
     }
+
+
+    pub fn recieve_server_move() {
+
+    }
+
+    
+
+    
+
 }
+
+

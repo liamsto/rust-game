@@ -21,10 +21,10 @@ lazy_static! {
         max_speed: 5.0,
         level: 1,
         moves: [
-            Some(Arc::new(all_moves::DISMANTLE.clone())),
-            Some(Arc::new(all_moves::HEAL.clone())),
-            Some(Arc::new(all_moves::SACRIFICE.clone())),
-            Some(Arc::new(all_moves::FOCUS.clone()))
+            Some(all_moves::DISMANTLE.clone()),
+            Some(all_moves::HEAL.clone()),
+            Some(all_moves::SACRIFICE.clone()),
+            Some(all_moves::FOCUS.clone())
         ],
         items: vec![],
         held_item: None,

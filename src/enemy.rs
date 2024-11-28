@@ -1,7 +1,7 @@
 use std::collections::HashMap;
 use std::sync::{Arc, Mutex};
 
-use crate::assets::all_moves::AiData;
+use crate::assets::all_moves::MoveData;
 use crate::combatant::Combatant;
 use crate::effect::Effect;
 use crate::item::Item;
@@ -24,7 +24,7 @@ pub struct Enemy {
     pub held_item: Option<Arc<Item>>,
     pub aggression: f32,
     pub effects: Arc<Mutex<Vec<Effect>>>,
-    pub ai_data: Arc<HashMap<&'static str, AiData>>,
+    pub ai_data: Arc<HashMap<&'static str, MoveData>>,
     pub crit_chance: f32,
 }
 

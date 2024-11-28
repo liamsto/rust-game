@@ -1,6 +1,8 @@
-use std::sync::Arc;
+use std::{collections::HashMap, sync::Arc};
 
-use crate::{character::Character, cloneablefn_combatant::CloneableFnCombatant};
+use lazy_static::lazy_static;
+
+use crate::{assets::all_moves::{self, MoveData}, character::Character, cloneablefn_combatant::CloneableFnCombatant};
 
 #[derive(Clone)]
 
@@ -39,4 +41,33 @@ impl Move {
             effect_fn: Arc::clone(&self.effect_fn),
         }
     }
+
+    pub fn serialize(&self) -> String {
+        format!(
+            "{}|{}",
+            self.name,
+            self.priority,
+        )
+    }
+
+    pub fn deserialize(serialized: &str) -> Arc<Move> {
+        let name = serialized.split('|').nth(0).unwrap();
+        let move_dictionary = &MOVE_DICTIONARY;
+        let move_arc = move_dictionary.get(name).unwrap();
+        move_arc.clone()
+    }
+
+}
+
+
+lazy_static!{
+    pub static ref MOVE_DICTIONARY: HashMap<&'static str, Arc<Move>> = {
+        let mut m = HashMap::new();
+        m.insert("Dismantle", all_moves::DISMANTLE.clone());
+        m.insert("Flamethrower", all_moves::FLAMETHROWER.clone());
+        m.insert("Heal", all_moves::HEAL.clone());
+        m.insert("Sacrifice", all_moves::SACRIFICE.clone());
+        m.insert("Focus", all_moves::FOCUS.clone());
+        m
+    };
 }

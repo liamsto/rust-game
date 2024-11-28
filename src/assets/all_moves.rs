@@ -2,28 +2,8 @@ use crate::{assets::all_effects, combatant::Combatant, move_mod::Move};
 use lazy_static::lazy_static;
 use std::{collections::HashMap, sync::Arc};
 
-//BASIC MOVES
 lazy_static! {
-    pub(crate) static ref PUNCH: Move = Move {
-        name: "Punch",
-        priority: 0,
-        description: "A basic punch",
-        effect_fn: Arc::new(|character: &mut dyn Combatant, enemy: &mut dyn Combatant| {
-            let user_attack = *character.attack();
-            let enemy_defense = *enemy.defense();
-            let mut damage = 10.0 + (user_attack - enemy_defense) * 0.5;
-            damage = character.crit(damage);
-            if damage <= 0.0 {
-                println!("The attack was ineffective!");
-                return;
-            }
-            *enemy.health() -= damage;
-            println!("{} took {} damage!", enemy.name(), damage);
-            enemy.check_death();
-            return;
-        }),
-    };
-    pub(crate) static ref DISMANTLE: Move = Move {
+    pub(crate) static ref DISMANTLE: Arc<Move> = Arc::new(Move {
         name: "Dismantle",
         priority: 0,
         description: "An attack that ignores enemy defense",
@@ -40,8 +20,8 @@ lazy_static! {
             enemy.check_death();
             return;
         }),
-    };
-    pub(crate) static ref FLAMETHROWER: Move = Move {
+    });
+    pub(crate) static ref FLAMETHROWER: Arc<Move> = Arc::new(Move {
         name: "Flamethrower",
         priority: 0,
         description: "Deals burn damage",
@@ -65,8 +45,8 @@ lazy_static! {
             enemy.check_death();
             return;
         })
-    };
-    pub(crate) static ref FOCUS: Move = Move {
+    });
+    pub(crate) static ref FOCUS: Arc<Move> = Arc::new(Move {
         name: "Focus",
         priority: -1,
         description: "Raises attack and speed",
@@ -82,8 +62,8 @@ lazy_static! {
             );
             return;
         }),
-    };
-    pub(crate) static ref HEAL: Move = Move {
+    });
+    pub(crate) static ref HEAL: Arc<Move> = Arc::new(Move {
         name: "Heal",
         priority: -1,
         description: "Heals the user",
@@ -97,8 +77,8 @@ lazy_static! {
             println!("{} healed!", character.name());
             return;
         }),
-    };
-    pub(crate) static ref SACRIFICE: Move = Move {
+    });
+    pub(crate) static ref SACRIFICE: Arc<Move> = Arc::new(Move {
         name: "Sacrifice",
         description: "Trades health for a large increase in attack",
         priority: 0,
@@ -115,11 +95,11 @@ lazy_static! {
             character.check_death();
             return;
         }),
-    };
+    });
 }
 
 //struct to allow AI to make decisions without having to include the damage and healthinc values in the move struct, since they are only used by the AI
-pub struct AiData {
+pub struct MoveData {
     pub name: String,
     pub damage: f32,
     pub healthinc: f32,
@@ -132,7 +112,7 @@ pub struct AiData {
     pub priority: i32,
 }
 
-impl AiData {
+impl MoveData {
     pub fn new(
         name: String,
         damage: f32,
@@ -144,8 +124,8 @@ impl AiData {
         ignores_defense: bool,
         self_damage: f32,
         priority: i32,
-    ) -> AiData {
-        AiData {
+    ) -> MoveData {
+        MoveData {
             name,
             damage,
             healthinc,
@@ -160,9 +140,9 @@ impl AiData {
     }
 }
 
-impl Clone for AiData {
-    fn clone(&self) -> AiData {
-        AiData {
+impl Clone for MoveData {
+    fn clone(&self) -> MoveData {
+        MoveData {
             name: self.name.clone(),
             damage: self.damage,
             healthinc: self.healthinc,
@@ -179,7 +159,7 @@ impl Clone for AiData {
 
 //AI MOVES
 lazy_static! {
-    pub static ref punch: AiData = AiData::new(
+    pub static ref punch: MoveData = MoveData::new(
         "Punch".to_string(),
         10.0,
         0.0,
@@ -191,7 +171,7 @@ lazy_static! {
         0.0,
         0
     );
-    pub static ref dismantle: AiData = AiData::new(
+    pub static ref dismantle: MoveData = MoveData::new(
         "Dismantle".to_string(),
         5.0,
         0.0,
@@ -203,7 +183,7 @@ lazy_static! {
         0.0,
         0
     );
-    pub static ref flamethrower: AiData = AiData::new(
+    pub static ref flamethrower: MoveData = MoveData::new(
         "Flamethrower".to_string(),
         5.0,
         0.0,
@@ -215,7 +195,7 @@ lazy_static! {
         0.0,
         0
     );
-    pub static ref focus: AiData = AiData::new(
+    pub static ref focus: MoveData = MoveData::new(
         "Focus".to_string(),
         0.0,
         0.0,
@@ -227,7 +207,7 @@ lazy_static! {
         0.0,
         -1
     );
-    pub static ref heal: AiData = AiData::new(
+    pub static ref heal: MoveData = MoveData::new(
         "Heal".to_string(),
         0.0,
         15.0,
@@ -239,7 +219,7 @@ lazy_static! {
         0.0,
         -1
     );
-    pub static ref sacrifice: AiData = AiData::new(
+    pub static ref sacrifice: MoveData = MoveData::new(
         "Sacrifice".to_string(),
         0.0,
         0.0,
@@ -254,7 +234,7 @@ lazy_static! {
 }
 
 lazy_static! {
-    pub static ref DEBUG_AI_MOVES: HashMap<&'static str, AiData> = {
+    pub static ref DEBUG_AI_MOVES: HashMap<&'static str, MoveData> = {
         let mut m = HashMap::new();
         m.insert("Dismantle", dismantle.clone());
         m.insert("Sacrifice", sacrifice.clone());
@@ -263,3 +243,4 @@ lazy_static! {
         m
     };
 }
+
